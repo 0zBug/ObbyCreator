@@ -100,8 +100,10 @@ function ObbyCreator.Object(Object)
            		repeat task.wait() until self.Queue[1] == Edit
            		
            		task.wait(0.1)
-           		
-            	ObbyCreator.Edit(Object, {[Key] = Value})
+
+		pcall(function()
+            		ObbyCreator.Edit(Object, {[Key] = Value})
+		end)
             	
             	table.remove(self.Queue, 1)
             end)
