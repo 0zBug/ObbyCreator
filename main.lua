@@ -7,11 +7,11 @@ local LocalPlayer = Players.LocalPlayer
 
 local Obbies = Workspace.Obbies
 local Obby = Obbies[LocalPlayer.Name]
-local Zone = Obby.Grid
+local Zone = Obby.GatePos.Value
 local Items = Obby.Items
 local Parts = Items.Parts
 
-local Origin = Zone.CFrame * CFrame.new(0, 1, 0)
+local Origin = Zone * CFrame.new(0, -3, -250)
 
 local Events = {
 	Move = Events.MoveObject,
@@ -77,6 +77,21 @@ function ObbyCreator.new(Type)
     return ObbyCreator.Object(Block)
 end
 
+local function getproperties(Instance)
+    local Table = {}
+    
+    for _, Property in next, game:GetService("ReflectionService"):GetPropertyNames(Instance.ClassName) do
+        pcall(function()
+            Table[Property] = Instance[Property]
+        end)
+    end
+
+    Table["Position"] = Instance["Position"]
+    Table["Orientation"] = Instance["Orientation"]
+
+    return Table
+end
+
 function ObbyCreator.Object(Object)
     local Properties = getproperties(Object)
 
@@ -98,13 +113,13 @@ function ObbyCreator.Object(Object)
            		table.insert(self.Queue, Edit)
            		
            		repeat task.wait() until self.Queue[1] == Edit
-           		
-           		task.wait(0.1)
 
-		pcall(function()
-            		ObbyCreator.Edit(Object, {[Key] = Value})
-		end)
-            	
+                task.wait(0.3)
+
+                pcall(function()
+                    ObbyCreator.Edit(Object, {[Key] = Value})
+                end)
+
             	table.remove(self.Queue, 1)
             end)
         end
